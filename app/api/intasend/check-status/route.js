@@ -1,11 +1,20 @@
 import { NextResponse } from 'next/server'
 
 // IntaSend API configuration
-const INTASEND_API_URL = 'https://payment.intasend.com/api/v1/checkout/'
-const INTASEND_SECRET_KEY = process.env.INTASEND_SECRET_KEY || 'ISSecretKey_live_bca26356-8e6f-4e86-bb7a-7a83217b50b3'
+const INTASEND_API_URL = 'https://payment.intasend.com/api/v1/payment/status/'
+const INTASEND_SECRET_KEY = process.env.INTASEND_SECRET_KEY
 
 export async function GET(request) {
   try {
+    // Validate that the secret key is configured
+    if (!INTASEND_SECRET_KEY) {
+      console.error('INTASEND_SECRET_KEY is not configured')
+      return NextResponse.json(
+        { error: 'Payment gateway not configured. Please set INTASEND_SECRET_KEY environment variable.' },
+        { status: 500 }
+      )
+    }
+
     const { searchParams } = new URL(request.url)
     const checkout_id = searchParams.get('checkout_id')
 
@@ -29,7 +38,7 @@ export async function GET(request) {
     if (!response.ok) {
       console.error('IntaSend API error:', data)
       return NextResponse.json(
-        { error: data.message || 'Failed to check payment status' },
+        { error: data.message || data.detail || 'Failed to check payment status' },
         { status: response.status }
       )
     }
@@ -37,15 +46,17 @@ export async function GET(request) {
     // Return payment status
     return NextResponse.json({
       success: true,
-      checkout_id: data.id,
-      status: data.state,
+      checkout_id: data.id || data.checkout_id,
+      status: data.state || data.status,
       api_ref: data.api_ref,
       amount: data.amount,
       currency: data.currency,
       email: data.email,
-      phone: data.phone_number,
+      phone: data.phone_number || data.phone,
       created_at: data.created_at,
       updated_at: data.updated_at,
+      narrative: data.narrative,
+      mpesa_reference: data.mpesa_reference,
     })
 
   } catch (error) {

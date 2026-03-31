@@ -1,11 +1,20 @@
 import { NextResponse } from 'next/server'
 
 // IntaSend API configuration
-const INTASEND_API_URL = 'https://payment.intasend.com/api/v1/checkout/'
-const INTASEND_SECRET_KEY = process.env.INTASEND_SECRET_KEY || 'ISSecretKey_live_bca26356-8e6f-4e86-bb7a-7a83217b50b3'
+const INTASEND_API_URL = 'https://payment.intasend.com/api/v1/payment/mpesa-stk-push/'
+const INTASEND_SECRET_KEY = process.env.INTASEND_SECRET_KEY
 
 export async function POST(request) {
   try {
+    // Validate that the secret key is configured
+    if (!INTASEND_SECRET_KEY) {
+      console.error('INTASEND_SECRET_KEY is not configured')
+      return NextResponse.json(
+        { error: 'Payment gateway not configured. Please set INTASEND_SECRET_KEY environment variable.' },
+        { status: 500 }
+      )
+    }
+
     const body = await request.json()
     const { amount, currency, email, phone, api_ref, redirect_url, webhook_url } = body
 
@@ -17,7 +26,11 @@ export async function POST(request) {
       )
     }
 
-    // Create checkout session with IntaSend
+    // Format phone number (remove leading 0 or +254 and add 254)
+    let formattedPhone = phone.replace(/^0/, '').replace(/^\+254/, '').replace(/^254/, '')
+    formattedPhone = `254${formattedPhone}`
+
+    // Create STK push request with IntaSend
     const response = await fetch(INTASEND_API_URL, {
       method: 'POST',
       headers: {
@@ -28,12 +41,11 @@ export async function POST(request) {
         amount: amount,
         currency: currency || 'KES',
         email: email,
-        phone: phone,
+        phone_number: formattedPhone,
         api_ref: api_ref || `FULIZA-${Date.now()}`,
         redirect_url: redirect_url,
         webhook_url: webhook_url,
         method: 'M-PESA',
-        hosted: true,
       }),
     })
 
@@ -42,21 +54,22 @@ export async function POST(request) {
     if (!response.ok) {
       console.error('IntaSend API error:', data)
       return NextResponse.json(
-        { error: data.message || 'Failed to create checkout session' },
+        { error: data.message || data.detail || 'Failed to create STK push' },
         { status: response.status }
       )
     }
 
-    // Return the checkout URL
+    // Return the STK push response
     return NextResponse.json({
       success: true,
-      url: data.url,
-      checkout_id: data.id,
+      checkout_id: data.id || data.checkout_id,
       api_ref: data.api_ref,
+      state: data.state,
+      message: data.message || 'STK push sent successfully',
     })
 
   } catch (error) {
-    console.error('Error creating checkout session:', error)
+    console.error('Error creating STK push:', error)
     return NextResponse.json(
       { error: 'Internal server error', message: error.message },
       { status: 500 }

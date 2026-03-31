@@ -4,7 +4,7 @@ This document describes the IntaSend payment gateway integration for the Fuliza 
 
 ## Overview
 
-The website now uses IntaSend as the payment gateway instead of PayHero. IntaSend provides a secure, hosted payment page that supports M-PESA and other payment methods.
+The website uses IntaSend's M-Pesa STK Push API for seamless mobile payments. This allows users to complete payments directly from their phone without being redirected to a separate payment page.
 
 ## Configuration
 
@@ -37,30 +37,32 @@ Add these variables in Netlify dashboard:
 
 1. User selects a Fuliza package
 2. User enters ID number and M-PESA phone number
-3. User clicks "Pay via IntaSend"
+3. User clicks "Pay via M-Pesa"
 
-### 2. Create Checkout Session
+### 2. Create STK Push Request
 
 The frontend calls `/api/intasend/create-checkout` which:
 
 1. Validates the payment details
-2. Creates a checkout session with IntaSend API
-3. Returns the IntaSend payment page URL
+2. Formats the phone number (removes leading 0 or +254)
+3. Creates an STK push request with IntaSend API
+4. Returns the checkout ID for status tracking
 
-### 3. Redirect to IntaSend
+### 3. STK Push Notification
 
-1. User is redirected to IntaSend's hosted payment page
-2. User selects payment method (M-PESA, card, etc.)
-3. User completes payment
+1. User receives an STK push notification on their phone
+2. User enters their M-Pesa PIN to authorize the payment
+3. Payment is processed by M-Pesa
 
-### 4. Payment Callback
+### 4. Payment Status Polling
 
-After payment, IntaSend redirects to `/payment/callback` with:
+The frontend polls `/api/intasend/check-status` every 5 seconds to check payment status:
 
-1. `checkout_id`: Unique checkout identifier
-2. `tracking_id`: IntaSend tracking ID
-3. `status`: Payment status (COMPLETE, FAILED, PENDING)
-4. `api_ref`: Your reference (e.g., FULIZA-5000)
+1. Checks payment status using the checkout ID
+2. Updates UI based on status:
+   - `COMPLETE`: Payment successful
+   - `FAILED`: Payment failed
+   - `PENDING`: Payment still processing
 
 ### 5. Webhook Notification
 
@@ -80,7 +82,7 @@ The webhook:
 
 ### `/api/intasend/create-checkout`
 
-Creates a new checkout session with IntaSend.
+Creates an M-Pesa STK push request with IntaSend.
 
 **Request:**
 ```json
@@ -88,7 +90,7 @@ Creates a new checkout session with IntaSend.
   "amount": 49,
   "currency": "KES",
   "email": "user@example.com",
-  "phone": "254712345678",
+  "phone": "0712345678",
   "api_ref": "FULIZA-5000",
   "redirect_url": "https://fulizacom.netlify.app/payment/callback",
   "webhook_url": "https://fulizacom.netlify.app/.netlify/functions/intasend-webhook"
@@ -99,9 +101,10 @@ Creates a new checkout session with IntaSend.
 ```json
 {
   "success": true,
-  "url": "https://payment.intasend.com/checkout/...",
   "checkout_id": "checkout_id",
-  "api_ref": "FULIZA-5000"
+  "api_ref": "FULIZA-5000",
+  "state": "PENDING",
+  "message": "STK push sent successfully"
 }
 ```
 
@@ -124,7 +127,8 @@ GET /api/intasend/check-status?checkout_id=checkout_id
   "amount": 49,
   "currency": "KES",
   "email": "user@example.com",
-  "phone": "254712345678"
+  "phone": "254712345678",
+  "mpesa_reference": "ABC123XYZ"
 }
 ```
 
@@ -190,14 +194,21 @@ The webhook verifies the challenge from IntaSend:
 2. Run: `netlify dev`
 3. Test webhook with ngrok or Postman
 
-### Test Cards
+### Test Phone Numbers
 
-IntaSend provides test cards for testing:
+IntaSend provides test phone numbers for testing:
 
-- **Success**: Use any valid card
-- **Failure**: Use specific test card numbers
+- **Success**: Use a valid M-Pesa registered phone number
+- **Failure**: Use specific test numbers provided by IntaSend
 
 ## Troubleshooting
+
+### STK Push Not Received
+
+1. Check that phone number is correctly formatted (254XXXXXXXXX)
+2. Verify the phone number is registered with M-Pesa
+3. Check IntaSend dashboard for error messages
+4. Verify API keys are correct
 
 ### Webhook Not Receiving Events
 

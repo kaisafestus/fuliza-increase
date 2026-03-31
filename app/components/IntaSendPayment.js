@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // IntaSend Payment Component
 export default function IntaSendPayment({ 
@@ -15,18 +15,55 @@ export default function IntaSendPayment({
 }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [checkoutId, setCheckoutId] = useState(null)
+  const [polling, setPolling] = useState(false)
 
-  // IntaSend configuration
-  const INTASEND_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_INTASEND_PUBLISHABLE_KEY || 'ISPubKey_live_2ace7e71-4cc3-4897-aac6-785d485f08d0'
-  const INTASEND_API_URL = 'https://payment.intasend.com/api/v1/checkout/'
+  // Poll for payment status
+  useEffect(() => {
+    let intervalId
+    if (checkoutId && polling) {
+      intervalId = setInterval(async () => {
+        try {
+          const response = await fetch(`/api/intasend/check-status?checkout_id=${checkoutId}`)
+          const data = await response.json()
+
+          if (data.success) {
+            if (data.status === 'COMPLETE' || data.status === 'completed') {
+              setPolling(false)
+              setSuccess(true)
+              if (onSuccess) {
+                onSuccess(data)
+              }
+            } else if (data.status === 'FAILED' || data.status === 'failed') {
+              setPolling(false)
+              setError('Payment failed. Please try again.')
+              if (onError) {
+                onError(new Error('Payment failed'))
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Error checking payment status:', err)
+        }
+      }, 5000) // Check every 5 seconds
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
+    }
+  }, [checkoutId, polling, onSuccess, onError])
 
   // Initialize payment
   const initiatePayment = async () => {
     setLoading(true)
     setError('')
+    setSuccess(false)
 
     try {
-      // Create payment session
+      // Create STK push request
       const response = await fetch('/api/intasend/create-checkout', {
         method: 'POST',
         headers: {
@@ -46,15 +83,17 @@ export default function IntaSendPayment({
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create checkout session')
+        throw new Error(data.error || 'Failed to create STK push')
       }
 
-      // Redirect to IntaSend payment page
-      if (data.url) {
-        window.location.href = data.url
-      } else {
-        throw new Error('No payment URL received')
-      }
+      // STK push sent successfully
+      setCheckoutId(data.checkout_id)
+      setPolling(true)
+      setSuccess(true)
+      
+      // Show success message
+      alert('STK push sent to your phone. Please enter your M-Pesa PIN to complete the payment.')
+
     } catch (err) {
       setError(err.message)
       if (onError) {
@@ -69,15 +108,21 @@ export default function IntaSendPayment({
     <div className="intasend-payment">
       <button
         onClick={initiatePayment}
-        disabled={loading}
+        disabled={loading || polling}
         className="intasend-button"
       >
-        {loading ? 'Processing...' : `Pay KSh ${amount} via IntaSend`}
+        {loading ? 'Sending STK Push...' : polling ? 'Waiting for payment...' : `Pay KSh ${amount} via M-Pesa`}
       </button>
       
       {error && (
         <div className="intasend-error">
           {error}
+        </div>
+      )}
+      
+      {success && !error && (
+        <div className="intasend-success">
+          {polling ? 'STK push sent! Please check your phone and enter your M-Pesa PIN.' : 'Payment completed successfully!'}
         </div>
       )}
     </div>
