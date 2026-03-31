@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-export default function PaymentCallback() {
+function PaymentCallbackContent() {
   const searchParams = useSearchParams()
   const [status, setStatus] = useState('processing')
   const [message, setMessage] = useState('Processing your payment...')
@@ -153,5 +153,23 @@ export default function PaymentCallback() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function PaymentCallback() {
+  return (
+    <Suspense fallback={
+      <div className="payment-callback">
+        <div className="payment-callback-container">
+          <div className="payment-status processing">
+            <div className="payment-spinner"></div>
+            <h2>Loading...</h2>
+            <p>Please wait while we load your payment details.</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <PaymentCallbackContent />
+    </Suspense>
   )
 }
