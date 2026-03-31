@@ -29,6 +29,8 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "app/supabase/functions",
+    "app/supabase/functions/**"
   ]
 }
