@@ -14,6 +14,27 @@ exports.handler = async (event, context) => {
     // Parse the webhook payload
     const payload = JSON.parse(event.body);
     
+    // Verify the challenge (IntaSend sends this for verification)
+    const challenge = payload.challenge;
+    const expectedChallenge = process.env.INTASEND_CHALLENGE;
+    
+    if (challenge && expectedChallenge && challenge !== expectedChallenge) {
+      console.error('Challenge verification failed');
+      return {
+        statusCode: 401,
+        body: JSON.stringify({ error: 'Unauthorized - Invalid challenge' }),
+      };
+    }
+    
+    // If this is a challenge verification request, return the challenge
+    if (challenge && !payload.invoice_id) {
+      console.log('Challenge verification request received');
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ challenge: challenge }),
+      };
+    }
+    
     // Log the webhook data (for debugging)
     console.log('IntaSend Webhook Received:', JSON.stringify(payload, null, 2));
     
@@ -31,7 +52,6 @@ exports.handler = async (event, context) => {
       host,
       created_at,
       updated_at,
-      challenge,
     } = payload;
     
     // Verify the webhook (optional but recommended)
