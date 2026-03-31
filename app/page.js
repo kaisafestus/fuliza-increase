@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import IntaSendPayment from './components/IntaSendPayment'
 
-// Supabase edge function URL for PayHero
-const PAYHERO_URL = 'https://rxlnwmxtxousxyxdqkuw.supabase.co/functions/v1/mpesa-stk'
+// IntaSend configuration
+const INTASEND_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_INTASEND_PUBLISHABLE_KEY || 'ISPubKey_live_2ace7e71-4cc3-4897-aac6-785d485f08d0'
 
 export default function Home() {
   // Packages (12)
@@ -43,7 +44,7 @@ export default function Home() {
     setShowModal(false)
   }
 
-  // Handle payment
+  // Handle payment with IntaSend
   const handlePayment = async (e) => {
     e.preventDefault()
 
@@ -64,36 +65,37 @@ export default function Home() {
     if (formattedPhone.startsWith('0')) formattedPhone = '254' + formattedPhone.substring(1)
     else if (formattedPhone.startsWith('7')) formattedPhone = '254' + formattedPhone
 
-    setStatusMessage('Initiating STK Push...')
+    setStatusMessage('Redirecting to IntaSend payment...')
     setStatusType('')
     setPaymentProcessing(true)
 
     try {
-      const response = await fetch(PAYHERO_URL, {
+      // Create checkout session
+      const response = await fetch('/api/intasend/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: currentFee,
-          phoneNumber: formattedPhone,
-          accountReference: `FULIZA-${currentLimit.replace(/,/g,'')}`,
-          customerName: idNumber,
-          transactionDesc: `Fuliza limit upgrade - KSh ${currentFee}`
+          currency: 'KES',
+          email: `${idNumber}@fuliza.com`,
+          phone: formattedPhone,
+          api_ref: `FULIZA-${currentLimit.replace(/,/g,'')}`,
+          redirect_url: `${window.location.origin}/payment/callback`,
+          webhook_url: `${window.location.origin}/.netlify/functions/intasend-webhook`,
         })
       })
       const data = await response.json()
-      if (data.success) {
-        setStatusMessage('✅ STK push sent! Check your phone and enter PIN.')
+      if (data.success && data.url) {
+        setStatusMessage('Redirecting to payment page...')
         setStatusType('success')
-        setTimeout(() => {
-          setShowModal(false)
-        }, 3000)
+        // Redirect to IntaSend payment page
+        window.location.href = data.url
       } else {
-        throw new Error(data.error || 'STK initiation failed')
+        throw new Error(data.error || 'Failed to create payment session')
       }
     } catch (err) {
       setStatusMessage('Error: ' + err.message)
       setStatusType('error')
-    } finally {
       setPaymentProcessing(false)
     }
   }
@@ -266,7 +268,7 @@ export default function Home() {
               className="modal-button"
               disabled={paymentProcessing}
             >
-              {paymentProcessing ? 'Processing...' : 'Pay via STK Push'}
+              {paymentProcessing ? 'Processing...' : 'Pay via IntaSend'}
             </button>
           </form>
 
