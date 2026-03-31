@@ -85,11 +85,10 @@ export default function Home() {
         })
       })
       const data = await response.json()
-      if (data.success && data.url) {
-        setStatusMessage('Redirecting to payment page...')
+      if (data.success) {
+        setStatusMessage('STK push sent to your phone. Please enter your M-Pesa PIN to complete the payment.')
         setStatusType('success')
-        // Redirect to IntaSend payment page
-        window.location.href = data.url
+        // Keep paymentProcessing true to show waiting state
       } else {
         throw new Error(data.error || 'Failed to create payment session')
       }

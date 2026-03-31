@@ -45,7 +45,7 @@ The frontend calls `/api/intasend/create-checkout` which:
 
 1. Validates the payment details
 2. Formats the phone number (removes leading 0 or +254)
-3. Creates an STK push request with IntaSend API
+3. Creates an STK push request with IntaSend API (`/api/v1/payment/collection/`)
 4. Returns the checkout ID for status tracking
 
 ### 3. STK Push Notification
