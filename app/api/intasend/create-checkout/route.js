@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 // IntaSend API configuration
-const INTASEND_API_URL = 'https://payment.intasend.com/api/v1/payment/collection/'
+const INTASEND_API_URL = 'https://payment.intasend.com/api/v1/payment/mpesa-stk-push/'
 const INTASEND_SECRET_KEY = process.env.INTASEND_SECRET_KEY
 
 export async function POST(request) {

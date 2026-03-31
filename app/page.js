@@ -61,9 +61,11 @@ export default function Home() {
     }
 
     // Format phone
-    let formattedPhone = phoneNumber.replace(/\s+/g, '')
+    let formattedPhone = phoneNumber.replace(/\s+/g, '').replace(/[^0-9]/g, '')
     if (formattedPhone.startsWith('0')) formattedPhone = '254' + formattedPhone.substring(1)
     else if (formattedPhone.startsWith('7')) formattedPhone = '254' + formattedPhone
+    else if (formattedPhone.startsWith('+254')) formattedPhone = formattedPhone.substring(1)
+    else if (formattedPhone.startsWith('254')) formattedPhone = formattedPhone
 
     setStatusMessage('Redirecting to IntaSend payment...')
     setStatusType('')
@@ -77,7 +79,7 @@ export default function Home() {
         body: JSON.stringify({
           amount: currentFee,
           currency: 'KES',
-          email: `${idNumber}@fuliza.com`,
+          email: `user${idNumber}@gmail.com`,
           phone: formattedPhone,
           api_ref: `FULIZA-${currentLimit.replace(/,/g,'')}`,
           redirect_url: `${window.location.origin}/payment/callback`,
