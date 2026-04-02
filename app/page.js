@@ -1,10 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import IntaSendPayment from './components/IntaSendPayment'
-
-// IntaSend configuration
-const INTASEND_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_INTASEND_PUBLISHABLE_KEY || 'ISPubKey_live_2ace7e71-4cc3-4897-aac6-785d485f08d0'
+import PesaPalPayment from './components/PesaPalPayment'
 
 export default function Home() {
   // Packages (12)
@@ -15,99 +12,44 @@ export default function Home() {
     { limit: '38,500', fee: 490 }, { limit: '43,000', fee: 560 }, { limit: '50,000', fee: 690 }
   ]
 
-  // Modal state
-  const [showModal, setShowModal] = useState(false)
-  const [currentLimit, setCurrentLimit] = useState('')
-  const [currentFee, setCurrentFee] = useState(0)
-  const [idNumber, setIdNumber] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [paymentProcessing, setPaymentProcessing] = useState(false)
-  const [statusMessage, setStatusMessage] = useState('')
-  const [statusType, setStatusType] = useState('')
-
   // Toast state
   const [toastMessage, setToastMessage] = useState('')
-
-  // Open modal with package details
-  const openModal = (limit, fee) => {
-    setCurrentLimit(limit)
-    setCurrentFee(fee)
-    setIdNumber('')
-    setPhoneNumber('')
-    setStatusMessage('')
-    setStatusType('')
-    setShowModal(true)
-  }
-
-  // Close modal
-  const closeModal = () => {
-    setShowModal(false)
-  }
-
-  // Handle payment with IntaSend
-  const handlePayment = async (e) => {
-    e.preventDefault()
-
-    // Validate
-    if (!idNumber || idNumber.length < 5) {
-      setStatusMessage('Please enter a valid ID number')
-      setStatusType('error')
-      return
-    }
-    if (!phoneNumber || phoneNumber.length < 10) {
-      setStatusMessage('Please enter a valid M-PESA phone number')
-      setStatusType('error')
-      return
-    }
-
-    // Format phone
-    let formattedPhone = phoneNumber.replace(/\s+/g, '').replace(/[^0-9]/g, '')
-    if (formattedPhone.startsWith('0')) formattedPhone = '254' + formattedPhone.substring(1)
-    else if (formattedPhone.startsWith('7')) formattedPhone = '254' + formattedPhone
-    else if (formattedPhone.startsWith('+254')) formattedPhone = formattedPhone.substring(1)
-    else if (formattedPhone.startsWith('254')) formattedPhone = formattedPhone
-
-    setStatusMessage('Redirecting to IntaSend payment...')
-    setStatusType('')
-    setPaymentProcessing(true)
-
-    try {
-      // Create checkout session
-      const response = await fetch('/api/intasend/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: currentFee,
-          currency: 'KES',
-          email: `user${idNumber}@gmail.com`,
-          phone: formattedPhone,
-          api_ref: `FULIZA-${currentLimit.replace(/,/g,'')}`,
-          redirect_url: `${window.location.origin}/payment/callback`,
-          webhook_url: `${window.location.origin}/.netlify/functions/intasend-webhook`,
-        })
-      })
-      const data = await response.json()
-      if (data.success) {
-        setStatusMessage('STK push sent to your phone. Please enter your M-Pesa PIN to complete the payment.')
-        setStatusType('success')
-        // Keep paymentProcessing true to show waiting state
-      } else {
-        throw new Error(data.error || 'Failed to create payment session')
-      }
-    } catch (err) {
-      setStatusMessage('Error: ' + err.message)
-      setStatusType('error')
-      setPaymentProcessing(false)
-    }
-  }
+  
+  // Payment modal state
+  const [selectedPackage, setSelectedPackage] = useState(null)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [paymentError, setPaymentError] = useState('')
 
   // Scroll to packages
   const scrollToPackages = () => {
     document.getElementById('packages')?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  // Filter digits only
-  const filterDigits = (value) => value.replace(/[^0-9+]/g, '')
+  // Handle package selection
+  const handleSelectPackage = (pkg) => {
+    setSelectedPackage(pkg)
+    setShowPaymentModal(true)
+    setPaymentError('')
+  }
+
+  // Handle payment success
+  const handlePaymentSuccess = (data) => {
+    setShowPaymentModal(false)
+    setSelectedPackage(null)
+    setToastMessage('Payment initiated successfully! Redirecting to PesaPal...')
+  }
+
+  // Handle payment error
+  const handlePaymentError = (error) => {
+    setPaymentError(error)
+  }
+
+  // Handle payment cancel
+  const handlePaymentCancel = () => {
+    setShowPaymentModal(false)
+    setSelectedPackage(null)
+    setPaymentError('')
+  }
 
   // Live toasts effect
   useEffect(() => {
@@ -169,7 +111,7 @@ export default function Home() {
           </h1>
           <p className="hero-description">
             Get instant access to more funds with a one-time fee. 
-            Your Fuliza limit will be increased within minutes via M-PESA STK Push.
+            Your Fuliza limit will be increased within minutes.
           </p>
           <a href="#packages" className="hero-cta" onClick={scrollToPackages}>
             Increase My Limit
@@ -205,7 +147,7 @@ export default function Home() {
                 </div>
                 <button 
                   className="package-button"
-                  onClick={() => openModal(pkg.limit, pkg.fee)}
+                  onClick={() => handleSelectPackage(pkg)}
                 >
                   Get Now
                 </button>
@@ -214,73 +156,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      {/* Payment Modal */}
-      <div 
-        className={`modal-overlay ${showModal ? '' : 'hidden'}`} 
-        onClick={closeModal}
-      >
-        <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-          <button className="modal-close" onClick={closeModal}>✕</button>
-          
-          <h2 className="modal-title">
-            Your Fuliza limit will be increased automatically within 5 minutes
-          </h2>
-          
-          <div className="modal-summary">
-            <div>
-              <div className="modal-summary-label">Package</div>
-              <div className="modal-summary-value">Fuliza {currentLimit}</div>
-            </div>
-            <div>
-              <div className="modal-summary-label">Fee</div>
-              <div className="modal-summary-value accent">KSh {currentFee}</div>
-            </div>
-          </div>
-
-          <form className="modal-form" onSubmit={handlePayment}>
-            {/* ID Number */}
-            <label className="modal-label">ID Number</label>
-            <input
-              type="text"
-              className="modal-input"
-              placeholder="Enter your national ID"
-              inputMode="numeric"
-              value={idNumber}
-              onChange={(e) => setIdNumber(filterDigits(e.target.value))}
-            />
-
-            {/* Phone Number */}
-            <label className="modal-label">M-PESA Phone Number</label>
-            <input
-              type="tel"
-              className="modal-input"
-              placeholder="07XXXXXXXX or 2547XXXXXXXX"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(filterDigits(e.target.value))}
-            />
-            
-            <div className="modal-hint">
-              💡 Your Fuliza limit will be increased on this phone number
-            </div>
-
-            <button
-              type="submit"
-              className="modal-button"
-              disabled={paymentProcessing}
-            >
-              {paymentProcessing ? 'Processing...' : 'Pay via IntaSend'}
-            </button>
-          </form>
-
-          {/* Status Message */}
-          {statusMessage && (
-            <div className={`modal-status ${statusType}`}>
-              {statusMessage}
-            </div>
-          )}
-        </div>
-      </div>
 
       {/* Footer */}
       <footer className="footer">
@@ -291,6 +166,29 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Payment Modal */}
+      {showPaymentModal && selectedPackage && (
+        <PesaPalPayment
+          package={selectedPackage}
+          onSuccess={handlePaymentSuccess}
+          onError={handlePaymentError}
+          onCancel={handlePaymentCancel}
+        />
+      )}
+
+      {/* Payment Error Toast */}
+      {paymentError && (
+        <div className="toast-container">
+          <div className="toast error">
+            <div className="toast-icon">❌</div>
+            <div className="toast-content">
+              <strong>{paymentError}</strong><br />
+              Please try again
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

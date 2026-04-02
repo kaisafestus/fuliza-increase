@@ -1,4 +1,5 @@
 import './globals.css'
+import './pesapal-styles.css'
 
 export const metadata = {
   title: 'Fuliza - Increase Your Limit',

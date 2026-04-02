@@ -1,156 +1,215 @@
 'use client'
 
-import { useEffect, useState, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 function PaymentCallbackContent() {
   const searchParams = useSearchParams()
   const [status, setStatus] = useState('processing')
-  const [message, setMessage] = useState('Processing your payment...')
-  const [details, setDetails] = useState(null)
+  const [paymentDetails, setPaymentDetails] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    // Get payment status from URL parameters
-    const checkout_id = searchParams.get('checkout_id')
-    const tracking_id = searchParams.get('tracking_id')
-    const statusParam = searchParams.get('status')
-    const api_ref = searchParams.get('api_ref')
+    const orderId = searchParams.get('order_id')
+    const trackingId = searchParams.get('OrderTrackingId')
+    const pesapalMerchantReference = searchParams.get('PesapalMerchantReference')
+
+    if (!orderId && !trackingId) {
+      setError('No order information found')
+      setStatus('error')
+      return
+    }
 
     // Check payment status
     const checkPaymentStatus = async () => {
       try {
-        if (statusParam === 'COMPLETE' || statusParam === 'completed') {
-          setStatus('success')
-          setMessage('Payment successful! Your Fuliza limit will be increased within 5 minutes.')
-          setDetails({
-            checkout_id,
-            tracking_id,
-            api_ref,
-            status: statusParam,
-          })
-        } else if (statusParam === 'FAILED' || statusParam === 'failed') {
-          setStatus('failed')
-          setMessage('Payment failed. Please try again.')
-          setDetails({
-            checkout_id,
-            tracking_id,
-            api_ref,
-            status: statusParam,
-          })
-        } else if (statusParam === 'PENDING' || statusParam === 'pending') {
-          setStatus('pending')
-          setMessage('Payment is pending. We will notify you once confirmed.')
-          setDetails({
-            checkout_id,
-            tracking_id,
-            api_ref,
-            status: statusParam,
-          })
-        } else {
-          // If no status parameter, check with backend
-          const response = await fetch(`/api/intasend/check-status?checkout_id=${checkout_id}`)
-          const data = await response.json()
-          
-          if (data.status === 'COMPLETE') {
-            setStatus('success')
-            setMessage('Payment successful! Your Fuliza limit will be increased within 5 minutes.')
-          } else if (data.status === 'FAILED') {
-            setStatus('failed')
-            setMessage('Payment failed. Please try again.')
-          } else {
-            setStatus('pending')
-            setMessage('Payment is being processed...')
-          }
-          
-          setDetails(data)
+        const response = await fetch(
+          `/api/pesapal/callback?OrderTrackingId=${trackingId || orderId}`
+        )
+        
+        const data = await response.json()
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to check payment status')
         }
-      } catch (error) {
-        console.error('Error checking payment status:', error)
+
+        setPaymentDetails(data)
+        
+        // Set status based on payment status
+        if (data.payment_status_description === 'Completed') {
+          setStatus('success')
+        } else if (data.payment_status_description === 'Failed') {
+          setStatus('failed')
+        } else {
+          setStatus('pending')
+        }
+      } catch (err) {
+        console.error('Error checking payment status:', err)
+        setError(err.message)
         setStatus('error')
-        setMessage('Unable to verify payment status. Please contact support.')
       }
     }
 
-    if (checkout_id || statusParam) {
-      checkPaymentStatus()
-    } else {
-      setStatus('error')
-      setMessage('Invalid payment callback. Missing required parameters.')
-    }
-  }, [searchParams])
+    checkPaymentStatus()
 
-  return (
-    <div className="payment-callback">
-      <div className="payment-callback-container">
-        {status === 'processing' && (
-          <div className="payment-status processing">
-            <div className="payment-spinner"></div>
-            <h2>Processing Payment</h2>
-            <p>{message}</p>
+    // Poll for status updates if pending
+    const interval = setInterval(() => {
+      if (status === 'pending') {
+        checkPaymentStatus()
+      }
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [searchParams, status])
+
+  const handleReturnHome = () => {
+    window.location.href = '/'
+  }
+
+  const handleRetry = () => {
+    window.location.href = '/'
+  }
+
+  if (status === 'processing') {
+    return (
+      <div className="callback-container">
+        <div className="callback-card">
+          <div className="callback-icon processing">
+            <div className="spinner"></div>
           </div>
-        )}
-
-        {status === 'success' && (
-          <div className="payment-status success">
-            <div className="payment-icon success">✓</div>
-            <h2>Payment Successful!</h2>
-            <p>{message}</p>
-            {details && (
-              <div className="payment-details">
-                <p><strong>Reference:</strong> {details.api_ref || details.checkout_id}</p>
-                {details.tracking_id && (
-                  <p><strong>Tracking ID:</strong> {details.tracking_id}</p>
-                )}
-              </div>
-            )}
-            <a href="/" className="payment-button">
-              Return to Home
-            </a>
+          <h1>Processing Payment</h1>
+          <p>Please wait while we confirm your payment...</p>
+          <div className="callback-info">
+            <p>This may take a few moments.</p>
           </div>
-        )}
+        </div>
+      </div>
+    )
+  }
 
-        {status === 'failed' && (
-          <div className="payment-status failed">
-            <div className="payment-icon failed">✕</div>
-            <h2>Payment Failed</h2>
-            <p>{message}</p>
-            {details && (
-              <div className="payment-details">
-                <p><strong>Reference:</strong> {details.api_ref || details.checkout_id}</p>
-              </div>
-            )}
-            <a href="/" className="payment-button">
+  if (status === 'error') {
+    return (
+      <div className="callback-container">
+        <div className="callback-card">
+          <div className="callback-icon error">❌</div>
+          <h1>Payment Error</h1>
+          <p>{error || 'An error occurred while processing your payment'}</p>
+          <div className="callback-actions">
+            <button onClick={handleRetry} className="callback-btn primary">
               Try Again
-            </a>
+            </button>
+            <button onClick={handleReturnHome} className="callback-btn secondary">
+              Return Home
+            </button>
           </div>
-        )}
+        </div>
+      </div>
+    )
+  }
 
-        {status === 'pending' && (
-          <div className="payment-status pending">
-            <div className="payment-icon pending">⏳</div>
-            <h2>Payment Pending</h2>
-            <p>{message}</p>
-            {details && (
-              <div className="payment-details">
-                <p><strong>Reference:</strong> {details.api_ref || details.checkout_id}</p>
+  if (status === 'failed') {
+    return (
+      <div className="callback-container">
+        <div className="callback-card">
+          <div className="callback-icon failed">❌</div>
+          <h1>Payment Failed</h1>
+          <p>Your payment was not successful.</p>
+          {paymentDetails && (
+            <div className="callback-details">
+              <div className="detail-row">
+                <span>Order ID:</span>
+                <span>{paymentDetails.order_tracking_id || 'N/A'}</span>
+              </div>
+              {paymentDetails.confirmation_code && (
+                <div className="detail-row">
+                  <span>Confirmation Code:</span>
+                  <span>{paymentDetails.confirmation_code}</span>
+                </div>
+              )}
+            </div>
+          )}
+          <div className="callback-actions">
+            <button onClick={handleRetry} className="callback-btn primary">
+              Try Again
+            </button>
+            <button onClick={handleReturnHome} className="callback-btn secondary">
+              Return Home
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (status === 'pending') {
+    return (
+      <div className="callback-container">
+        <div className="callback-card">
+          <div className="callback-icon pending">⏳</div>
+          <h1>Payment Pending</h1>
+          <p>Your payment is being processed.</p>
+          {paymentDetails && (
+            <div className="callback-details">
+              <div className="detail-row">
+                <span>Order ID:</span>
+                <span>{paymentDetails.order_tracking_id || 'N/A'}</span>
+              </div>
+              <div className="detail-row">
+                <span>Status:</span>
+                <span className="status-pending">Pending</span>
+              </div>
+            </div>
+          )}
+          <div className="callback-info">
+            <p>You will receive a confirmation once the payment is complete.</p>
+          </div>
+          <div className="callback-actions">
+            <button onClick={handleReturnHome} className="callback-btn primary">
+              Return Home
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Success status
+  return (
+    <div className="callback-container">
+      <div className="callback-card">
+        <div className="callback-icon success">✓</div>
+        <h1>Payment Successful!</h1>
+        <p>Your Fuliza limit has been increased successfully.</p>
+        {paymentDetails && (
+          <div className="callback-details">
+            <div className="detail-row">
+              <span>Order ID:</span>
+              <span>{paymentDetails.order_tracking_id || 'N/A'}</span>
+            </div>
+            {paymentDetails.confirmation_code && (
+              <div className="detail-row">
+                <span>Confirmation Code:</span>
+                <span>{paymentDetails.confirmation_code}</span>
               </div>
             )}
-            <a href="/" className="payment-button">
-              Return to Home
-            </a>
+            {paymentDetails.amount && (
+              <div className="detail-row">
+                <span>Amount Paid:</span>
+                <span>KSh {paymentDetails.amount}</span>
+              </div>
+            )}
           </div>
         )}
-
-        {status === 'error' && (
-          <div className="payment-status error">
-            <div className="payment-icon error">!</div>
-            <h2>Error</h2>
-            <p>{message}</p>
-            <a href="/" className="payment-button">
-              Return to Home
-            </a>
-          </div>
-        )}
+        <div className="callback-success-info">
+          <p>✓ Your Fuliza limit has been updated</p>
+          <p>✓ You will receive an M-PESA confirmation</p>
+          <p>✓ Check your M-PESA messages</p>
+        </div>
+        <div className="callback-actions">
+          <button onClick={handleReturnHome} className="callback-btn primary">
+            Return Home
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -159,13 +218,12 @@ function PaymentCallbackContent() {
 export default function PaymentCallback() {
   return (
     <Suspense fallback={
-      <div className="payment-callback">
-        <div className="payment-callback-container">
-          <div className="payment-status processing">
-            <div className="payment-spinner"></div>
-            <h2>Loading...</h2>
-            <p>Please wait while we load your payment details.</p>
+      <div className="callback-container">
+        <div className="callback-card">
+          <div className="callback-icon processing">
+            <div className="spinner"></div>
           </div>
+          <h1>Loading...</h1>
         </div>
       </div>
     }>

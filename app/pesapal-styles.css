@@ -1,0 +1,512 @@
+/* PesaPal Payment Modal Styles */
+.pesapal-payment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pesapal-payment-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.pesapal-payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 0;
+}
+
+.pesapal-payment-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.pesapal-close-btn {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.pesapal-close-btn:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.pesapal-package-summary {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  padding: 24px;
+  margin: 24px;
+  border-radius: 12px;
+}
+
+.pesapal-package-name {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.pesapal-package-fee {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.pesapal-package-fee strong {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.pesapal-package-limit {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.pesapal-form {
+  padding: 0 24px 24px;
+}
+
+.pesapal-form-group {
+  margin-bottom: 20px;
+}
+
+.pesapal-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.pesapal-form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.pesapal-form-group input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.pesapal-form-group input.error {
+  border-color: #f44336;
+}
+
+.pesapal-form-group input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.pesapal-error {
+  display: block;
+  color: #f44336;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.pesapal-hint {
+  display: block;
+  color: #666;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.pesapal-payment-methods {
+  margin: 24px 0;
+}
+
+.pesapal-method-title {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.pesapal-methods {
+  display: flex;
+  gap: 12px;
+}
+
+.pesapal-method {
+  flex: 1;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pesapal-method:hover {
+  border-color: #4CAF50;
+  background: #f8fff8;
+}
+
+.pesapal-method.active {
+  border-color: #4CAF50;
+  background: #e8f5e9;
+}
+
+.pesapal-method-icon {
+  display: block;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.pesapal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.pesapal-btn {
+  flex: 1;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pesapal-btn-primary {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+}
+
+.pesapal-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.pesapal-btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.pesapal-btn-secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.pesapal-btn-secondary:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.pesapal-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pesapal-footer {
+  padding: 20px 24px;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+.pesapal-secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #4CAF50;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.pesapal-terms {
+  color: #999;
+  font-size: 12px;
+}
+
+/* Payment Callback Page Styles */
+.callback-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.callback-card {
+  background: white;
+  border-radius: 20px;
+  padding: 48px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.5s ease;
+}
+
+.callback-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 48px;
+}
+
+.callback-icon.processing {
+  background: #e3f2fd;
+}
+
+.callback-icon.success {
+  background: #e8f5e9;
+  color: #4CAF50;
+}
+
+.callback-icon.failed {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.callback-icon.error {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.callback-icon.pending {
+  background: #fff3e0;
+  color: #ff9800;
+}
+
+.callback-card h1 {
+  margin: 0 0 16px;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.callback-card p {
+  margin: 0 0 24px;
+  color: #666;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.callback-details {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 24px 0;
+  text-align: left;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row span:first-child {
+  color: #666;
+  font-weight: 500;
+}
+
+.detail-row span:last-child {
+  color: #333;
+  font-weight: 600;
+}
+
+.status-pending {
+  color: #ff9800 !important;
+}
+
+.callback-success-info {
+  background: #e8f5e9;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 24px 0;
+  text-align: left;
+}
+
+.callback-success-info p {
+  margin: 8px 0;
+  color: #2e7d32;
+  font-size: 14px;
+}
+
+.callback-info {
+  background: #e3f2fd;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 24px 0;
+}
+
+.callback-info p {
+  margin: 0;
+  color: #1976d2;
+  font-size: 14px;
+}
+
+.callback-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.callback-btn {
+  flex: 1;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.callback-btn.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.callback-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.callback-btn.secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.callback-btn.secondary:hover {
+  background: #e0e0e0;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid #e0e0e0;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+/* Toast Error Style */
+.toast.error {
+  background: #f44336;
+}
+
+.toast.error .toast-icon {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+  .pesapal-payment-content {
+    margin: 10px;
+    max-height: 95vh;
+  }
+  
+  .pesapal-payment-header h2 {
+    font-size: 20px;
+  }
+  
+  .pesapal-package-summary {
+    margin: 16px;
+    padding: 20px;
+  }
+  
+  .pesapal-form {
+    padding: 0 16px 16px;
+  }
+  
+  .pesapal-actions {
+    flex-direction: column;
+  }
+  
+  .callback-card {
+    padding: 32px 24px;
+  }
+  
+  .callback-card h1 {
+    font-size: 24px;
+  }
+  
+  .callback-actions {
+    flex-direction: column;
+  }
+}
