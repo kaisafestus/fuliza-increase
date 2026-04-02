@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { verifyPayment } from '@/app/lib/paystack'
+import { verifyPayment } from '../../lib/paystack'
 
 export async function GET(request) {
   try {

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { initializePayment, generateReference } from '@/app/lib/paystack'
+import { initializePayment, generateReference } from '../../lib/paystack'
 
 export async function POST(request) {
   try {
