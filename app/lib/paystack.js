@@ -1,9 +1,19 @@
 // Paystack API Service
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY
 const PAYSTACK_BASE_URL = 'https://api.paystack.co'
+
+// Get Paystack secret key from environment
+function getSecretKey() {
+  const key = process.env.PAYSTACK_SECRET_KEY
+  if (!key) {
+    throw new Error('PAYSTACK_SECRET_KEY is not defined')
+  }
+  return key
+}
 
 // Initialize payment transaction
 export async function initializePayment(email, amount, reference, callbackUrl, metadata = {}) {
+  const PAYSTACK_SECRET_KEY = getSecretKey()
+  
   try {
     const response = await fetch(`${PAYSTACK_BASE_URL}/transaction/initialize`, {
       method: 'POST',
@@ -40,6 +50,8 @@ export async function initializePayment(email, amount, reference, callbackUrl, m
 
 // Verify payment transaction
 export async function verifyPayment(reference) {
+  const PAYSTACK_SECRET_KEY = getSecretKey()
+  
   try {
     const response = await fetch(`${PAYSTACK_BASE_URL}/transaction/verify/${reference}`, {
       method: 'GET',
