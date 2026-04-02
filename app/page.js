@@ -170,10 +170,7 @@ export default function Home() {
       {/* Payment Modal */}
       {showPaymentModal && selectedPackage && (
         <PaystackPayment
-          amount={selectedPackage.fee}
-          email="user@example.com"
-          phone="0700000000"
-          name="User"
+          packageFee={selectedPackage.fee}
           packageLimit={selectedPackage.limit}
           onSuccess={handlePaymentSuccess}
           onError={handlePaymentError}
