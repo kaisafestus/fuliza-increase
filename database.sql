@@ -32,8 +32,11 @@ CREATE POLICY "Allow authenticated select" ON contacts
 -- Optional: Create index for faster queries
 CREATE INDEX IF NOT EXISTS idx_contacts_created_at ON contacts(created_at DESC);
 
+-- Drop existing payments table if it exists (to avoid column conflicts)
+DROP TABLE IF EXISTS payments CASCADE;
+
 -- Create payments table for PesaPal transactions
-CREATE TABLE IF NOT EXISTS payments (
+CREATE TABLE payments (
   id SERIAL PRIMARY KEY,
   order_id VARCHAR(255) UNIQUE NOT NULL,
   tracking_id VARCHAR(255),
