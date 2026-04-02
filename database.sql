@@ -35,11 +35,10 @@ CREATE INDEX IF NOT EXISTS idx_contacts_created_at ON contacts(created_at DESC);
 -- Drop existing payments table if it exists (to avoid column conflicts)
 DROP TABLE IF EXISTS payments CASCADE;
 
--- Create payments table for PesaPal transactions
+-- Create payments table for Paystack transactions
 CREATE TABLE payments (
   id SERIAL PRIMARY KEY,
-  order_id VARCHAR(255) UNIQUE NOT NULL,
-  tracking_id VARCHAR(255),
+  reference VARCHAR(255) UNIQUE NOT NULL,
   amount DECIMAL(10, 2) NOT NULL,
   currency VARCHAR(10) DEFAULT 'KES',
   package_limit VARCHAR(50) NOT NULL,
@@ -47,8 +46,8 @@ CREATE TABLE payments (
   email VARCHAR(255) NOT NULL,
   name VARCHAR(255) NOT NULL,
   status VARCHAR(50) DEFAULT 'pending',
-  confirmation_code VARCHAR(255),
   payment_method VARCHAR(50),
+  paid_at TIMESTAMP WITH TIME ZONE,
   raw_response JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -82,8 +81,7 @@ CREATE POLICY "Allow authenticated update on payments" ON payments
   WITH CHECK (true);
 
 -- Create indexes for faster queries
-CREATE INDEX IF NOT EXISTS idx_payments_order_id ON payments(order_id);
-CREATE INDEX IF NOT EXISTS idx_payments_tracking_id ON payments(tracking_id);
+CREATE INDEX IF NOT EXISTS idx_payments_reference ON payments(reference);
 CREATE INDEX IF NOT EXISTS idx_payments_status ON payments(status);
 CREATE INDEX IF NOT EXISTS idx_payments_created_at ON payments(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_payments_email ON payments(email);

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import PesaPalPayment from './components/PesaPalPayment'
+import PaystackPayment from './components/PaystackPayment'
 
 export default function Home() {
   // Packages (12)
@@ -36,7 +36,7 @@ export default function Home() {
   const handlePaymentSuccess = (data) => {
     setShowPaymentModal(false)
     setSelectedPackage(null)
-    setToastMessage('Payment initiated successfully! Redirecting to PesaPal...')
+    setToastMessage('Payment initiated successfully! Redirecting to Paystack...')
   }
 
   // Handle payment error
@@ -169,11 +169,15 @@ export default function Home() {
 
       {/* Payment Modal */}
       {showPaymentModal && selectedPackage && (
-        <PesaPalPayment
-          package={selectedPackage}
+        <PaystackPayment
+          amount={selectedPackage.fee}
+          email="user@example.com"
+          phone="0700000000"
+          name="User"
+          packageLimit={selectedPackage.limit}
           onSuccess={handlePaymentSuccess}
           onError={handlePaymentError}
-          onCancel={handlePaymentCancel}
+          onClose={handlePaymentCancel}
         />
       )}
 
