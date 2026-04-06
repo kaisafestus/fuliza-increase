@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import LipanaPayment from './components/LipanaPayment'
 
 export default function Home() {
   const packages = [
@@ -11,13 +12,34 @@ export default function Home() {
   ]
 
   const [toastMessage, setToastMessage] = useState('')
+  const [selectedPackage, setSelectedPackage] = useState(null)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [paymentError, setPaymentError] = useState('')
 
   const scrollToPackages = () => {
     document.getElementById('packages')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   const handleSelectPackage = (pkg) => {
-    setToastMessage(`Selected Fuliza ${pkg.limit} - Payment coming soon`)
+    setSelectedPackage(pkg)
+    setShowPaymentModal(true)
+    setPaymentError('')
+  }
+
+  const handlePaymentSuccess = (data) => {
+    setShowPaymentModal(false)
+    setSelectedPackage(null)
+    setToastMessage('Payment initiated! Confirm on your phone.')
+  }
+
+  const handlePaymentError = (error) => {
+    setPaymentError(error)
+  }
+
+  const handlePaymentCancel = () => {
+    setShowPaymentModal(false)
+    setSelectedPackage(null)
+    setPaymentError('')
   }
 
   useEffect(() => {
@@ -108,10 +130,7 @@ export default function Home() {
                   <span className="package-fee-label">One-time fee</span>
                   <span className="package-fee-amount">KSh {pkg.fee}</span>
                 </div>
-                <button 
-                  className="package-button"
-                  onClick={() => handleSelectPackage(pkg)}
-                >
+                <button className="package-button" onClick={() => handleSelectPackage(pkg)}>
                   Get Now
                 </button>
               </div>
@@ -123,11 +142,31 @@ export default function Home() {
       <footer className="footer">
         <div className="footer-content">
           <div className="footer-logo">Safaricom PLC</div>
-          <div className="footer-text">
-            © 2026 Safaricom Limited · Fuliza Service
-          </div>
+          <div className="footer-text">© 2026 Safaricom Limited · Fuliza Service</div>
         </div>
       </footer>
+
+      {showPaymentModal && selectedPackage && (
+        <LipanaPayment
+          packageFee={selectedPackage.fee}
+          packageLimit={selectedPackage.limit}
+          onSuccess={handlePaymentSuccess}
+          onError={handlePaymentError}
+          onClose={handlePaymentCancel}
+        />
+      )}
+
+      {paymentError && (
+        <div className="toast-container">
+          <div className="toast error">
+            <div className="toast-icon">❌</div>
+            <div className="toast-content">
+              <strong>{paymentError}</strong><br />
+              Please try again
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
