@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
 const LIPANA_BASE_URL = 'https://api.lipana.com'
 
 export async function POST(request) {

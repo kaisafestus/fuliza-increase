@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server'
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
 import { verifyPayment } from '../../../lib/lipana'
 
 export async function GET(request) {
