@@ -54,9 +54,20 @@ export async function POST(request) {
       })
     })
 
-    const data = await response.json()
+    const text = await response.text()
     console.log('[Lipana] Response status:', response.status)
-    console.log('[Lipana] Response data:', JSON.stringify(data))
+    console.log('[Lipana] Response text:', text.substring(0, 500))
+
+    let data
+    try {
+      data = JSON.parse(text)
+    } catch (e) {
+      return NextResponse.json({
+        error: 'Lipana API returned invalid response',
+        details: text.substring(0, 200),
+        status: response.status
+      }, { status: 500 })
+    }
 
     if (!response.ok || data.status !== 'success') {
       return NextResponse.json({
