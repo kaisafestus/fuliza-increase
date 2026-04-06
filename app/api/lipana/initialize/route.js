@@ -34,8 +34,9 @@ export async function POST(request) {
 
   } catch (error) {
     console.error('Lipana initialization error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Failed to initialize payment'
     return NextResponse.json(
-      { error: error.message || 'Failed to initialize payment' },
+      { error: errorMessage },
       { status: 500 }
     )
   }

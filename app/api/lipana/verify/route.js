@@ -27,8 +27,9 @@ export async function GET(request) {
 
   } catch (error) {
     console.error('Lipana verification error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Failed to verify payment'
     return NextResponse.json(
-      { error: error.message || 'Failed to verify payment' },
+      { error: errorMessage },
       { status: 500 }
     )
   }
