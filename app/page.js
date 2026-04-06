@@ -1,10 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import LipanaPayment from './components/LipanaPayment'
 
 export default function Home() {
-  // Packages (12)
   const packages = [
     { limit: '5,000', fee: 49 }, { limit: '7,500', fee: 100 }, { limit: '10,000', fee: 140 },
     { limit: '12,500', fee: 160 }, { limit: '16,000', fee: 200 }, { limit: '20,000', fee: 260 },
@@ -12,46 +10,16 @@ export default function Home() {
     { limit: '38,500', fee: 490 }, { limit: '43,000', fee: 560 }, { limit: '50,000', fee: 690 }
   ]
 
-  // Toast state
   const [toastMessage, setToastMessage] = useState('')
-  
-  // Payment modal state
-  const [selectedPackage, setSelectedPackage] = useState(null)
-  const [showPaymentModal, setShowPaymentModal] = useState(false)
-  const [paymentError, setPaymentError] = useState('')
 
-  // Scroll to packages
   const scrollToPackages = () => {
     document.getElementById('packages')?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  // Handle package selection
   const handleSelectPackage = (pkg) => {
-    setSelectedPackage(pkg)
-    setShowPaymentModal(true)
-    setPaymentError('')
+    setToastMessage(`Selected Fuliza ${pkg.limit} - Payment coming soon`)
   }
 
-  // Handle payment success
-  const handlePaymentSuccess = (data) => {
-    setShowPaymentModal(false)
-    setSelectedPackage(null)
-    setToastMessage('Payment initiated! Confirm on your phone.')
-  }
-
-  // Handle payment error
-  const handlePaymentError = (error) => {
-    setPaymentError(error)
-  }
-
-  // Handle payment cancel
-  const handlePaymentCancel = () => {
-    setShowPaymentModal(false)
-    setSelectedPackage(null)
-    setPaymentError('')
-  }
-
-  // Live toasts effect
   useEffect(() => {
     const names = ['John', 'Mary', 'Peter', 'Anne', 'James', 'Lucy', 'David', 'Sarah']
     const prefixes = ['070', '071', '072', '074', '075', '079', '011']
@@ -68,7 +36,6 @@ export default function Home() {
 
   return (
     <>
-      {/* Navigation */}
       <nav className="navbar">
         <div className="navbar-container">
           <a href="#" className="navbar-brand">
@@ -86,7 +53,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Toast notification */}
       {toastMessage && (
         <div className="toast-container">
           <div className="toast">
@@ -99,7 +65,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
           <div className="hero-badge">
@@ -124,9 +89,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Main Content */}
       <main className="main-container">
-        {/* Packages Section */}
         <section id="packages">
           <div className="section-header">
             <h2 className="section-title">Select Your Fuliza Package</h2>
@@ -157,7 +120,6 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="footer">
         <div className="footer-content">
           <div className="footer-logo">Safaricom PLC</div>
@@ -166,34 +128,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* Payment Modal */}
-      {showPaymentModal && selectedPackage && (
-        <LipanaPayment
-          packageFee={selectedPackage.fee}
-          packageLimit={selectedPackage.limit}
-          onSuccess={handlePaymentSuccess}
-          onError={handlePaymentError}
-          onClose={handlePaymentCancel}
-        />
-      )}
-
-      {/* Payment Error Toast */}
-      {paymentError && (
-        <div className="toast-container">
-          <div className="toast error">
-            <div className="toast-icon">❌</div>
-            <div className="toast-content">
-              <strong>{paymentError}</strong><br />
-              Please try again
-            </div>
-          </div>
-        </div>
-      )}
     </>
   )
 }
-
-      
-
-      
