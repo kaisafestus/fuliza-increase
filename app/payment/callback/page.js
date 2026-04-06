@@ -18,13 +18,13 @@ function PaymentCallbackContent() {
       return
     }
 
-    // Verify payment with Paystack
+    // Verify payment with Lipana
     verifyPayment(reference)
   }, [searchParams])
 
   const verifyPayment = async (reference) => {
     try {
-      const response = await fetch(`/api/paystack/verify?reference=${reference}`)
+      const response = await fetch(`/api/lipana/verify?reference=${reference}`)
       const data = await response.json()
 
       if (!response.ok) {

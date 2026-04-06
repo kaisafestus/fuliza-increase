@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-export default function PaystackPayment({ 
+export default function LipanaPayment({ 
   packageLimit,
   packageFee,
   onSuccess, 
@@ -17,7 +17,6 @@ export default function PaystackPayment({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // Handle input change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -25,10 +24,8 @@ export default function PaystackPayment({
     })
   }
 
-  // Filter digits only for phone
   const filterDigits = (value) => value.replace(/[^0-9+]/g, '')
 
-  // Handle phone input change
   const handlePhoneChange = (e) => {
     setFormData({
       ...formData,
@@ -36,13 +33,11 @@ export default function PaystackPayment({
     })
   }
 
-  // Initialize payment
   const initiatePayment = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    // Validate
     if (!formData.name || formData.name.length < 2) {
       setError('Please enter your full name')
       setLoading(false)
@@ -60,15 +55,13 @@ export default function PaystackPayment({
     }
 
     try {
-      // Format phone number
       let formattedPhone = formData.phone.replace(/\s+/g, '').replace(/[^0-9]/g, '')
       if (formattedPhone.startsWith('0')) formattedPhone = '254' + formattedPhone.substring(1)
       else if (formattedPhone.startsWith('7')) formattedPhone = '254' + formattedPhone
       else if (formattedPhone.startsWith('+254')) formattedPhone = formattedPhone.substring(1)
       else if (formattedPhone.startsWith('254')) formattedPhone = formattedPhone
 
-      // Create payment initialization
-      const response = await fetch('/api/paystack/initialize', {
+      const response = await fetch('/api/lipana/initialize', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,14 +81,10 @@ export default function PaystackPayment({
         throw new Error(data.error || 'Failed to initialize payment')
       }
 
-      // Show success message
       setError('')
       if (onSuccess) {
         onSuccess(data)
       }
-
-      // Redirect to Paystack payment page
-      window.location.href = data.authorization_url
 
     } catch (err) {
       setError(err.message)
@@ -128,7 +117,6 @@ export default function PaystackPayment({
         </div>
 
         <form className="modal-form" onSubmit={initiatePayment}>
-          {/* Name */}
           <label className="modal-label">Full Name</label>
           <input
             type="text"
@@ -140,7 +128,6 @@ export default function PaystackPayment({
             required
           />
 
-          {/* Email */}
           <label className="modal-label">Email Address</label>
           <input
             type="email"
@@ -152,7 +139,6 @@ export default function PaystackPayment({
             required
           />
 
-          {/* Phone Number */}
           <label className="modal-label">M-PESA Phone Number</label>
           <input
             type="tel"
@@ -173,11 +159,10 @@ export default function PaystackPayment({
             className="modal-button"
             disabled={loading}
           >
-            {loading ? 'Processing...' : 'Pay via Paystack'}
+            {loading ? 'Processing...' : 'Pay via M-PESA'}
           </button>
         </form>
 
-        {/* Error Message */}
         {error && (
           <div className="modal-status error">
             {error}

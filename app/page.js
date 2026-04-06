@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import PaystackPayment from './components/PaystackPayment'
+import LipanaPayment from './components/LipanaPayment'
 
 export default function Home() {
   // Packages (12)
@@ -36,7 +36,7 @@ export default function Home() {
   const handlePaymentSuccess = (data) => {
     setShowPaymentModal(false)
     setSelectedPackage(null)
-    setToastMessage('Payment initiated successfully! Redirecting to Paystack...')
+    setToastMessage('Payment initiated! Confirm on your phone.')
   }
 
   // Handle payment error
@@ -169,7 +169,7 @@ export default function Home() {
 
       {/* Payment Modal */}
       {showPaymentModal && selectedPackage && (
-        <PaystackPayment
+        <LipanaPayment
           packageFee={selectedPackage.fee}
           packageLimit={selectedPackage.limit}
           onSuccess={handlePaymentSuccess}
@@ -193,3 +193,7 @@ export default function Home() {
     </>
   )
 }
+
+      
+
+      

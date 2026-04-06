@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { verifyPayment } from '../../../lib/paystack'
+import { verifyPayment } from '../../lib/lipana'
 
 export async function GET(request) {
   try {
@@ -13,23 +13,20 @@ export async function GET(request) {
       )
     }
 
-    // Verify payment with Paystack
     const result = await verifyPayment(reference)
 
     return NextResponse.json({
-      success: true,
+      success: result.success,
       status: result.status,
-      reference: result.reference,
       amount: result.amount,
       currency: result.currency,
-      paid_at: result.paid_at,
-      channel: result.channel,
-      customer: result.customer,
-      metadata: result.metadata
+      reference: result.merchant_reference,
+      payment_method: result.payment_method,
+      completed_at: result.completed_at
     })
 
   } catch (error) {
-    console.error('Paystack verification error:', error)
+    console.error('Lipana verification error:', error)
     return NextResponse.json(
       { error: error.message || 'Failed to verify payment' },
       { status: 500 }
