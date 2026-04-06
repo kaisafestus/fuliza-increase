@@ -1,14 +1,14 @@
 const LIPANA_BASE_URL = 'https://api.lipana.com'
 
 function getKeys() {
-  const publicKey = process.env.LIPANA_PUBLISHABLE_KEY
-  const secretKey = process.env.LIPANA_SECRET_KEY
+  const publicKey = process.env.LIPANA_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_LIPANA_PUBLISHABLE_KEY
+  const secretKey = process.env.LIPANA_SECRET_KEY || process.env.NEXT_PUBLIC_LIPANA_SECRET_KEY
 
   if (!publicKey) {
-    throw new Error('LIPANA_PUBLISHABLE_KEY is not defined')
+    throw new Error('LIPANA_PUBLISHABLE_KEY is not defined. Please set environment variable in Netlify.')
   }
   if (!secretKey) {
-    throw new Error('LIPANA_SECRET_KEY is not defined')
+    throw new Error('LIPANA_SECRET_KEY is not defined. Please set environment variable in Netlify.')
   }
 
   return { publicKey, secretKey }
