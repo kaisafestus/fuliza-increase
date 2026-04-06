@@ -17,6 +17,11 @@ function getKeys() {
 export async function initializePayment(email, amount, phone, name, packageLimit) {
   const { publicKey, secretKey } = getKeys()
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fulizacom.netlify.app'
+  const callbackUrl = `${baseUrl}/api/webhooks/mpesa`
+
+  console.log('[Lipana] Initializing payment with callback:', callbackUrl)
+
   try {
     const response = await fetch(`${LIPANA_BASE_URL}/v1/payments/initiate`, {
       method: 'POST',
@@ -32,7 +37,7 @@ export async function initializePayment(email, amount, phone, name, packageLimit
         amount: amount,
         message: `Fuliza Limit Increase - KES ${amount}`,
         merchant_reference: `FULIZA-${Date.now()}`,
-        callback_url: process.env.LIPANA_WEBHOOK_URL,
+        callback_url: callbackUrl,
         mobile: phone
       })
     })
