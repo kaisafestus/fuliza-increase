@@ -33,10 +33,20 @@ export async function POST(request) {
     })
 
   } catch (error) {
-    console.error('Lipana initialization error:', error)
+    console.error('[Lipana Initialize] Error:', error)
     const errorMessage = error instanceof Error ? error.message : 'Failed to initialize payment'
+    
+    const publicKey = process.env.LIPANA_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_LIPANA_PUBLISHABLE_KEY
+    const secretKey = process.env.LIPANA_SECRET_KEY || process.env.NEXT_PUBLIC_LIPANA_SECRET_KEY
+    
+    console.error('[Lipana Initialize] Env check:', {
+      hasPublicKey: !!publicKey,
+      hasSecretKey: !!secretKey,
+      publicKeyPrefix: publicKey?.substring(0, 12) + '...'
+    })
+    
     return NextResponse.json(
-      { error: errorMessage },
+      { error: errorMessage, debug: { hasPublicKey: !!publicKey, hasSecretKey: !!secretKey } },
       { status: 500 }
     )
   }

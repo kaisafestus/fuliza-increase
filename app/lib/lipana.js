@@ -17,8 +17,7 @@ function getKeys() {
 export async function initializePayment(email, amount, phone, name, packageLimit) {
   const { publicKey, secretKey } = getKeys()
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fulizacom.netlify.app'
-  const callbackUrl = `${baseUrl}/api/webhooks/mpesa`
+  const callbackUrl = 'https://fulizacom.netlify.app/api/webhooks/mpesa'
 
   console.log('[Lipana] Initializing payment with callback:', callbackUrl)
 
