@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { verifyPayment } from '../../lib/lipana'
+import { verifyPayment } from '../../../lib/lipana'
 
 export async function GET(request) {
   try {

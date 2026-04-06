@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { initializePayment, generateReference } from '../../lib/lipana'
+import { initializePayment, generateReference } from '../../../lib/lipana'
 
 export async function POST(request) {
   try {
