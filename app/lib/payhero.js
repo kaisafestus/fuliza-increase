@@ -55,7 +55,8 @@ export async function initializeSTKPush(phone, amount, reference, description) {
       transaction_desc: description,
       callback_url: process.env.NODE_ENV === 'production' 
         ? 'http://fuliza-increase-flame.vercel.app/api/webhooks/payhero'
-        : 'http://localhost:3000/api/webhooks/payhero'
+        : 'http://localhost:3000/api/webhooks/payhero',
+      provider: 'MPESA'
     }
     
     console.log('[PayHero] Request payload:', JSON.stringify(requestBody, null, 2))
