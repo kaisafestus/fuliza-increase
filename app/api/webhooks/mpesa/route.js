@@ -17,6 +17,7 @@ export async function POST(request) {
     switch (eventType) {
       case 'payment.success':
         console.log('[Lipana Webhook] Payment successful:', data.merchant_reference, data.amount)
+        // Here you would typically update your database, send confirmation emails, etc.
         break
       case 'payment.failed':
         console.log('[Lipana Webhook] Payment failed:', data.merchant_reference)

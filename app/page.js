@@ -142,7 +142,7 @@ export default function Home() {
       <footer className="footer">
         <div className="footer-content">
           <div className="footer-logo">Safaricom PLC</div>
-          <div className="footer-text">© 2026 Safaricom Limited · Fuliza Service</div>
+          <div className="footer-text"> 2026 Safaricom Limited · Fuliza Service</div>
         </div>
       </footer>
 
@@ -159,9 +159,9 @@ export default function Home() {
       {paymentError && (
         <div className="toast-container">
           <div className="toast error">
-            <div className="toast-icon">❌</div>
+            <div className="toast-icon">?</div>
             <div className="toast-content">
-              <strong>{paymentError}</strong><br />
+              <strong>{typeof paymentError === 'string' ? paymentError : paymentError.message || 'An error occurred'}</strong><br />
               Please try again
             </div>
           </div>

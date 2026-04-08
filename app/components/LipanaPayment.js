@@ -75,7 +75,7 @@ export default function LipanaPayment({ packageLimit, packageFee, onSuccess, onE
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}>×</button>
         
         <h2 className="modal-title">
           Your Fuliza limit will be increased automatically within 5 minutes
@@ -102,14 +102,14 @@ export default function LipanaPayment({ packageLimit, packageFee, onSuccess, onE
           <label className="modal-label">M-PESA Phone Number</label>
           <input type="tel" name="phone" className="modal-input" placeholder="07XXXXXXXX or 2547XXXXXXXX" value={formData.phone} onChange={handlePhoneChange} required />
           
-          <div className="modal-hint">💡 Your Fuliza limit will be increased on this phone number</div>
+          <div className="modal-hint">Your Fuliza limit will be increased on this phone number</div>
 
           <button type="submit" className="modal-button" disabled={loading}>
             {loading ? 'Processing...' : 'Pay via M-PESA'}
           </button>
         </form>
 
-        {error && <div className="modal-status error">{error}</div>}
+        {error && <div className="modal-status error">{typeof error === 'string' ? error : error.message || 'An error occurred'}</div>}
       </div>
     </div>
   )

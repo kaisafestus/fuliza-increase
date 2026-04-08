@@ -1,4 +1,4 @@
 {
   "/page": "app/page.js",
-  "/api/intasend/create-checkout/route": "app/api/intasend/create-checkout/route.js"
+  "/api/lipana/initialize/route": "app/api/lipana/initialize/route.js"
 }
