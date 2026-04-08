@@ -4,6 +4,7 @@ function getPayHeroCredentials() {
   const username = process.env.PAYHERO_API_USERNAME
   const password = process.env.PAYHERO_API_PASSWORD
   const accountId = process.env.PAYHERO_ACCOUNT_ID
+  const channelId = process.env.PAYHERO_CHANNEL_ID || accountId // Use channel_id if set, fallback to account_id
   const basicAuthToken = process.env.PAYHERO_BASIC_AUTH_TOKEN
 
   if (!username) {
@@ -19,11 +20,11 @@ function getPayHeroCredentials() {
     throw new Error('PAYHERO_BASIC_AUTH_TOKEN is not defined')
   }
 
-  return { username, password, accountId, basicAuthToken }
+  return { username, password, accountId, channelId, basicAuthToken }
 }
 
 export async function initializeSTKPush(phone, amount, reference, description, name) {
-  const { username, password, accountId, basicAuthToken } = getPayHeroCredentials()
+  const { username, password, accountId, channelId, basicAuthToken } = getPayHeroCredentials()
 
   // Format phone number (remove leading +254 if present, add 254 if starts with 0)
   let formattedPhone = phone.replace(/\s+/g, '').replace(/[^0-9]/g, '')
@@ -46,12 +47,13 @@ export async function initializeSTKPush(phone, amount, reference, description, n
     console.log('[PayHero] Making request to:', `${PAYHERO_BASE_URL}/v2/payments`)
     console.log('[PayHero] Auth token:', basicAuthToken.substring(0, 20) + '...')
     console.log('[PayHero] Account ID:', accountId)
+    console.log('[PayHero] Channel ID:', channelId)
     console.log('[PayHero] Username:', username)
     
     const requestBody = {
       amount: parseInt(amount),
       phone_number: formattedPhone.startsWith('254') ? '0' + formattedPhone.substring(3) : formattedPhone,
-      channel_id: parseInt(accountId),
+      channel_id: parseInt(channelId),
       provider: 'm-pesa',
       external_reference: reference,
       customer_name: name,
