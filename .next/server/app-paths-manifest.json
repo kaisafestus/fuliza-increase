@@ -1,4 +1,4 @@
 {
   "/page": "app/page.js",
-  "/api/lipana/initialize/route": "app/api/lipana/initialize/route.js"
+  "/api/payhero/initialize/route": "app/api/payhero/initialize/route.js"
 }

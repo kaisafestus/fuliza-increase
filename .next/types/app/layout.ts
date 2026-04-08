@@ -1,4 +1,4 @@
-// File: /home/issa/Fuliza/app/layout.js
+// File: /home/issa/HYBRID/fuliza-increase/app/layout.js
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
