@@ -1,4 +1,4 @@
-const PAYHERO_BASE_URL = 'https://backend.payhero.co.ke/api'
+const PAYHERO_BASE_URL = 'https://api.payhero.co.ke'
 
 function getPayHeroCredentials() {
   const username = process.env.PAYHERO_API_USERNAME
@@ -43,7 +43,7 @@ export async function initializeSTKPush(phone, amount, reference, description) {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
     }
     
-    console.log('[PayHero] Making request to:', `${PAYHERO_BASE_URL}/v2/payments`)
+    console.log('[PayHero] Making request to:', `${PAYHERO_BASE_URL}/api/v2/payments`)
     console.log('[PayHero] Auth token:', basicAuthToken.substring(0, 20) + '...')
     
     const requestBody = {
@@ -60,14 +60,21 @@ export async function initializeSTKPush(phone, amount, reference, description) {
     
     console.log('[PayHero] Request payload:', JSON.stringify(requestBody, null, 2))
     
-    const response = await fetch(`${PAYHERO_BASE_URL}/v2/payments`, {
+    // Add timeout and retry logic
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+    
+    const response = await fetch(`${PAYHERO_BASE_URL}/api/v2/payments`, {
       method: 'POST',
       headers: {
         'Authorization': basicAuthToken,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify(requestBody),
+      signal: controller.signal
     })
+    
+    clearTimeout(timeoutId)
 
     const text = await response.text()
     console.log('[PayHero] Response status:', response.status)
@@ -109,7 +116,7 @@ export async function checkSTKStatus(checkoutRequestID) {
     if (process.env.NODE_ENV !== 'production') {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
     }
-    const response = await fetch(`${PAYHERO_BASE_URL}/v2/payments/status`, {
+    const response = await fetch(`${PAYHERO_BASE_URL}/api/v2/payments/status`, {
       method: 'POST',
       headers: {
         'Authorization': basicAuthToken,
