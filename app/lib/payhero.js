@@ -54,7 +54,7 @@ export async function initializeSTKPush(phone, amount, reference, description) {
       account_reference: reference,
       transaction_desc: description,
       callback_url: process.env.NODE_ENV === 'production' 
-        ? 'https://fulizacom.netlify.app/api/webhooks/payhero'
+        ? 'http://fuliza-increase-flame.vercel.app/api/webhooks/payhero'
         : 'http://localhost:3000/api/webhooks/payhero'
     }
     
