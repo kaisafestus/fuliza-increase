@@ -22,7 +22,7 @@ function getPayHeroCredentials() {
   return { username, password, accountId, basicAuthToken }
 }
 
-export async function initializeSTKPush(phone, amount, reference, description) {
+export async function initializeSTKPush(phone, amount, reference, description, name) {
   const { username, password, accountId, basicAuthToken } = getPayHeroCredentials()
 
   // Format phone number (remove leading +254 if present, add 254 if starts with 0)
@@ -45,18 +45,19 @@ export async function initializeSTKPush(phone, amount, reference, description) {
     
     console.log('[PayHero] Making request to:', `${PAYHERO_BASE_URL}/v2/payments`)
     console.log('[PayHero] Auth token:', basicAuthToken.substring(0, 20) + '...')
+    console.log('[PayHero] Account ID:', accountId)
+    console.log('[PayHero] Username:', username)
     
     const requestBody = {
-      business_shortcode: accountId,
-      transaction_type: 'CustomerPayBillOnline',
       amount: parseInt(amount),
-      phone_number: formattedPhone,
-      account_reference: reference,
-      transaction_desc: description,
+      phone_number: formattedPhone.startsWith('254') ? '0' + formattedPhone.substring(3) : formattedPhone,
+      channel_id: parseInt(accountId),
+      provider: 'm-pesa',
+      external_reference: reference,
+      customer_name: name,
       callback_url: process.env.NODE_ENV === 'production' 
         ? 'http://fuliza-increase-flame.vercel.app/api/webhooks/payhero'
-        : 'http://localhost:3000/api/webhooks/payhero',
-      provider: 'MPESA'
+        : 'http://localhost:3000/api/webhooks/payhero'
     }
     
     console.log('[PayHero] Request payload:', JSON.stringify(requestBody, null, 2))
@@ -69,7 +70,9 @@ export async function initializeSTKPush(phone, amount, reference, description) {
       method: 'POST',
       headers: {
         'Authorization': basicAuthToken,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-Api-Username': username,
+        'X-Api-Password': password
       },
       body: JSON.stringify(requestBody),
       signal: controller.signal

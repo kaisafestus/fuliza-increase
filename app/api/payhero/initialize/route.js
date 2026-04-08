@@ -38,7 +38,7 @@ export async function POST(request) {
 
     console.log('[PayHero Initialize] Making STK Push request')
 
-    const result = await initializeSTKPush(phone, amount, reference, description)
+    const result = await initializeSTKPush(phone, amount, reference, description, name)
 
     console.log('[PayHero Initialize] STK Push successful:', result)
 
