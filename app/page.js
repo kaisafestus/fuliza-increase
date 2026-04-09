@@ -122,7 +122,7 @@ export default function Home() {
               <div className="package-card" key={idx}>
                 <div className="package-card-header">
                   <span className="package-name">FULIZA {pkg.limit}</span>
-                  <span className="package-badge" style={{colour:'black'}}>Available</span>
+                  <span className="package-badge" style={{color:'black'}}>🔥 Hot</span>
                 </div>
                 <div className="package-amount">KSh {pkg.limit}</div>
                 <div className="package-fee">
