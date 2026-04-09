@@ -61,7 +61,9 @@ export default function Home() {
       <nav className="navbar">
         <div className="navbar-container">
           <a href="#" className="navbar-brand">
-            <img src="/safaricom.png" alt="Safaricom" className="navbar-logo-img" />
+            <div className="navbar-logo-holder">
+              <div className="logo-s">S</div>
+            </div>
             <div>
               <div className="navbar-brand-text">Safaricom</div>
               <div className="navbar-brand-sub">Fuliza</div>
