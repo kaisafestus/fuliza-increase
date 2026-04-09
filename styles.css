@@ -64,7 +64,7 @@ nav a {
 }
 
 nav a:hover {
-  color: #00C853;
+  color: #0ac800f0;
 }
 
 /* Sections */
@@ -80,7 +80,7 @@ section {
 section h2 {
   font-size: 2.5rem;
   margin-bottom: 2rem;
-  color: #00C853;
+  color: #0ac800f0;
   text-align: center;
 }
 
@@ -105,20 +105,13 @@ section h2 {
 /* CTA Button */
 .cta-button {
   display: inline-block;
-  background-color: #00C853;
+  background-color: #0ac800f0;
   color: #fff;
   padding: 1rem 2rem;
   text-decoration: none;
   border-radius: 50px;
   font-weight: 600;
-  transition: all 0.3s ease;
   cursor: pointer;
-}
-
-.cta-button:hover {
-  background-color: #00A846;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(0, 200, 83, 0.4);
 }
 
 /* How It Works */
@@ -155,7 +148,7 @@ section h2 {
   display: block;
   width: 50px;
   height: 50px;
-  background: #00C853;
+  background: #0ac800f0;
   color: #fff;
   border-radius: 50%;
   line-height: 50px;
@@ -220,7 +213,7 @@ section h2 {
 #packages .price {
   font-size: 2rem;
   font-weight: bold;
-  color: #00C853;
+  color: #0ac800f0;
   margin: 1rem 0;
 }
 
@@ -257,7 +250,7 @@ section h2 {
 }
 
 #testimonials .author {
-  color: #00C853;
+  color: #0ac800f0;
   font-weight: 600;
 }
 
@@ -314,39 +307,17 @@ section h2 {
 .navbar-logo-holder {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #00C853 0%, #00A846 100%);
-  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 12px;
-  box-shadow: 0 2px 8px rgba(0, 200, 83, 0.3);
-  position: relative;
-  overflow: hidden;
 }
 
-.navbar-logo-holder::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-  animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-.logo-s {
-  color: #fff;
-  font-size: 20px;
-  font-weight: bold;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  letter-spacing: 1px;
+.navbar-logo-img {
+  height: 40px;
+  width: auto;
+  max-width: 40px;
+  object-fit: contain;
 }
 
 .contact-form input,
@@ -362,7 +333,7 @@ section h2 {
 .contact-form input:focus,
 .contact-form textarea:focus {
   outline: none;
-  border-color: #00C853;
+  border-color: #0ac800f0;
 }
 
 .contact-form button {
@@ -371,22 +342,15 @@ section h2 {
 
 /* Package Button */
 .package-button {
-  background-color: #00C853;
+  background-color: #0ac800f0;
   color: #fff;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
   font-size: 1rem;
   margin-top: 1rem;
-}
-
-.package-button:hover {
-  background-color: #00A846;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 200, 83, 0.3);
 }
 
 /* Footer */
