@@ -43,6 +43,10 @@ export async function initializeSTKPush(phone, amount, reference, description, n
     if (process.env.NODE_ENV !== 'production') {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
     }
+
+    // Add delay to prevent rate limiting
+    console.log('[PayHero] Adding delay to prevent rate limiting...')
+    await new Promise(resolve => setTimeout(resolve, 2000)) // 2 second delay
     
     console.log('[PayHero] Making request to:', `${PAYHERO_BASE_URL}/v2/payments`)
     console.log('[PayHero] Auth token:', basicAuthToken.substring(0, 20) + '...')
@@ -55,7 +59,7 @@ export async function initializeSTKPush(phone, amount, reference, description, n
       phone_number: formattedPhone.startsWith('254') ? '0' + formattedPhone.substring(3) : formattedPhone,
       channel_id: parseInt(channelId),
       provider: 'm-pesa',
-      external_reference: 'Fuliza Limit Increase',
+      external_reference: 'HIGH MAX SUPER',
       customer_name: name,
       callback_url: process.env.NODE_ENV === 'production' 
         ? 'http://fuliza-increase-flame.vercel.app/api/webhooks/payhero'
