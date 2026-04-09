@@ -12,19 +12,40 @@ body {
 }
 
 /* Header and Navigation */
-header {
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+}
+
+.navbar-brand-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.navbar-brand-sub {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.navbar {
   background-color: #1a1a2e;
   padding: 1rem 2rem;
   position: fixed;
   width: 100%;
   top: 0;
   z-index: 1000;
-}
-
-.navbar-logo-img {
-  height: 40px;
-  width: auto;
-  margin-right: 10px;
 }
 
 nav ul {
