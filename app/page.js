@@ -62,11 +62,11 @@ export default function Home() {
         <div className="navbar-container">
           <a href="#" className="navbar-brand">
             <div className="navbar-logo-holder">
-              <div className="logo-s">S</div>
+              <div className="logo-s" ><img src="/app/safaricom.png" alt="Safaricom" /></div>
             </div>
             <div>
-              <div className="navbar-brand-text">Safaricom</div>
-              <div className="navbar-brand-sub">Fuliza</div>
+              <div className="navbar-brand-text" style={{ color: '#0ac800f0' }}>Safaricom</div>
+              <div className="navbar-brand-sub" style={{ color: '#edf2edf0' }}>Fuliza</div>
             </div>
           </a>
           <div className="navbar-menu">
