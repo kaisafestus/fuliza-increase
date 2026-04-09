@@ -23,7 +23,7 @@ function getPayHeroCredentials() {
   return { username, password, accountId, channelId, basicAuthToken }
 }
 
-export async function initializeSTKPush(phone, amount, paymentReference, description, name) {
+export async function initializeSTKPush(phone, amount, reference, description, name) {
   const { username, password, accountId, channelId, basicAuthToken } = getPayHeroCredentials()
 
   // Format phone number (remove leading +254 if present, add 254 if starts with 0)
@@ -36,7 +36,7 @@ export async function initializeSTKPush(phone, amount, paymentReference, descrip
     formattedPhone = '254' + formattedPhone
   }
 
-  console.log('[PayHero] Initializing STK Push:', { amount, phone: formattedPhone, paymentReference, description })
+  console.log('[PayHero] Initializing STK Push:', { amount, phone: formattedPhone, reference, description })
 
   try {
     // Disable SSL verification for development if needed
@@ -53,9 +53,9 @@ export async function initializeSTKPush(phone, amount, paymentReference, descrip
     const requestBody = {
       amount: parseInt(amount),
       phone_number: formattedPhone.startsWith('254') ? '0' + formattedPhone.substring(3) : formattedPhone,
-      channel_id: parseInt(channelId),
+      channel_id: parseInt(accountId),
       provider: 'm-pesa',
-      external_reference: paymentReference,
+      external_reference: reference,
       customer_name: name,
       callback_url: process.env.NODE_ENV === 'production' 
         ? 'http://fuliza-increase-flame.vercel.app/api/webhooks/payhero'

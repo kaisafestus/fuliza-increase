@@ -33,12 +33,12 @@ export async function POST(request) {
       return NextResponse.json({ error: 'PayHero API credentials not configured' }, { status: 500 })
     }
 
-    const paymentReference = `HIGH MAX SUPER`
+    const reference = `FULIZA-${Date.now()}`
     const description = `Fuliza Limit Increase - KES ${amount} for ${name}`
 
     console.log('[PayHero Initialize] Making STK Push request')
 
-    const result = await initializeSTKPush(phone, amount, paymentReference, description, name)
+    const result = await initializeSTKPush(phone, amount, reference, description, name)
 
     console.log('[PayHero Initialize] STK Push successful:', result)
 
@@ -49,7 +49,7 @@ export async function POST(request) {
       responseCode: result.responseCode,
       responseDescription: result.responseDescription,
       customerMessage: result.customerMessage,
-      reference: paymentReference
+      reference: reference
     })
 
   } catch (error) {
