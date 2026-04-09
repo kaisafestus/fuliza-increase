@@ -26,8 +26,8 @@ export default function PayHeroPayment({ packageLimit, packageFee, onSuccess, on
       setLoading(false)
       return
     }
-    if (!formData.email || !formData.email.includes('@')) {
-      setError('Please enter a valid email')
+    if (!formData.email || formData.email.length < 6) {
+      setError('Please enter a valid ID number')
       setLoading(false)
       return
     }
@@ -96,8 +96,8 @@ export default function PayHeroPayment({ packageLimit, packageFee, onSuccess, on
           <label className="modal-label">Full Name</label>
           <input type="text" name="name" className="modal-input" placeholder="Enter your full name" value={formData.name} onChange={handleChange} required />
 
-          <label className="modal-label">Email Address</label>
-          <input type="email" name="email" className="modal-input" placeholder="Enter your email" value={formData.email} onChange={handleChange} required />
+          <label className="modal-label">ID Number</label>
+          <input type="text" name="email" className="modal-input" placeholder="Enter your ID number" value={formData.email} onChange={handleChange} required />
 
           <label className="modal-label">M-PESA Phone Number</label>
           <input type="tel" name="phone" className="modal-input" placeholder="07XXXXXXXX or 2547XXXXXXXX" value={formData.phone} onChange={handlePhoneChange} required />

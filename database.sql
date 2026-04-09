@@ -1,10 +1,13 @@
 -- Create contacts table for storing form submissions
 -- Run this SQL in your Supabase SQL Editor
 
-CREATE TABLE IF NOT EXISTS contacts (
+-- Drop table if exists to avoid conflicts
+DROP TABLE IF EXISTS contacts;
+
+CREATE TABLE contacts (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
+  id_number VARCHAR(50) NOT NULL,
   phone VARCHAR(50) NOT NULL,
   message TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
