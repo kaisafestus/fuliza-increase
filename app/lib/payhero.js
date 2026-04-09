@@ -36,7 +36,7 @@ export async function initializeSTKPush(phone, amount, paymentReference, descrip
     formattedPhone = '254' + formattedPhone
   }
 
-  console.log('[PayHero] Initializing STK Push:', { amount, phone: formattedPhone, reference, description })
+  console.log('[PayHero] Initializing STK Push:', { amount, phone: formattedPhone, paymentReference, description })
 
   try {
     // Disable SSL verification for development if needed
