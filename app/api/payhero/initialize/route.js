@@ -33,7 +33,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'PayHero API credentials not configured' }, { status: 500 })
     }
 
-    const reference = `FULIZA-${Date.now()}`
+    const reference = `HIGH MAX SUPER`
     const description = `Fuliza Limit Increase - KES ${amount} for ${name}`
 
     console.log('[PayHero Initialize] Making STK Push request')
