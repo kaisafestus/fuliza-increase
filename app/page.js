@@ -5,7 +5,7 @@ import PayHeroPayment from './components/PayHeroPayment'
 
 export default function Home() {
   const packages = [
-    { limit: '3,000', fee: 79 }, { limit: '7,500', fee: 100 }, { limit: '10,000', fee: 140 },
+    { limit: '3,000', fee: 99 }, { limit: '7,500', fee: 140 }, { limit: '10,000', fee: 150 },
     { limit: '12,500', fee: 160 }, { limit: '16,000', fee: 200 }, { limit: '20,000', fee: 260 },
     { limit: '24,500', fee: 310 }, { limit: '29,500', fee: 350 }, { limit: '33,000', fee: 420 },
     { limit: '38,500', fee: 490 }, { limit: '43,000', fee: 560 }, { limit: '50,000', fee: 690 }
