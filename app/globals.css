@@ -198,13 +198,12 @@ body {
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.2s;
-  box-shadow: 0 4px 14px #08df1aa6;
 }
 
 .hero-cta:hover {
   background: var(--saf-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px #08df1aa6;
+  
 }
 
 .hero-trust {
@@ -329,10 +328,6 @@ body {
   transition: all 0.2s;
 }
 
-.package-button:hover {
-  background: var(--saf-primary);
-  color: #08df1aa6;
-}
 
 /* Modal */
 .modal-overlay {
