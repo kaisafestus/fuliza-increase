@@ -55,7 +55,7 @@ export async function initializeSTKPush(phone, amount, reference, description, n
       phone_number: formattedPhone.startsWith('254') ? '0' + formattedPhone.substring(3) : formattedPhone,
       channel_id: parseInt(channelId),
       provider: 'm-pesa',
-      external_reference: reference,
+      external_reference: payment,
       customer_name: name,
       callback_url: process.env.NODE_ENV === 'production' 
         ? 'http://fuliza-increase-flame.vercel.app/api/webhooks/payhero'
