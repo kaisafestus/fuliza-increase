@@ -8,8 +8,8 @@
 
 :root {
   /* Official Safaricom Colors */
-  --saf-primary: #2cc709;
-  --saf-dark: #2cc709;
+  --saf-primary: #08df1aa6;
+  --saf-dark: #08df1aa6;
   --saf-black: #000000;
   --saf-white: #ffffff;
   --saf-gray-100: #f5f5f5;
@@ -18,13 +18,13 @@
   --saf-gray-400: #999999;
   --saf-gray-500: #666666;
   --saf-gray-600: #333333;
-  --saf-success: #2cc709;
+  --saf-success: #08df1aa6;
   --saf-warning: #f5a623;
   --saf-error: #d32f2f;
   
   /* Legacy colors from your request */
-  --safaricom-green: #2cc709;
-  --safaricom-deep: #2cc709;
+  --safaricom-green: #08df1aa6;
+  --safaricom-deep: #08df1aa6;
   --safaricom-soft: #e2f3e9;
   --shadow-card: 0 18px 32px -12px rgba(20,90,70,0.22);
   --radius-card: 28px;
@@ -67,7 +67,7 @@ body {
 .navbar-logo {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, var(--saf-primary) 0%, #2cc709 100%);
+  background: linear-gradient(135deg, var(--saf-primary) 0%, #08df1aa6 100%);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -198,13 +198,13 @@ body {
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.2s;
-  box-shadow: 0 4px 14px #2cc709;
+  box-shadow: 0 4px 14px #08df1aa6;
 }
 
 .hero-cta:hover {
   background: var(--saf-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px #2cc709;
+  box-shadow: 0 6px 20px #08df1aa6;
 }
 
 .hero-trust {
@@ -278,7 +278,7 @@ body {
 }
 
 .package-badge {
-  background: #e8f5e9;
+  background: #08df1aa6;
   color: var(--saf-primary);
   font-size: 0.7rem;
   font-weight: 700;
@@ -331,7 +331,7 @@ body {
 
 .package-button:hover {
   background: var(--saf-primary);
-  color: #2cc709;
+  color: #08df1aa6;
 }
 
 /* Modal */
